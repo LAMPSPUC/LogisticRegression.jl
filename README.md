@@ -1,4 +1,5 @@
 # LogisticRegression
+Simple logistic regression package.
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://LAMPSPUC.github.io/LogisticRegression.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://LAMPSPUC.github.io/LogisticRegression.jl/dev)

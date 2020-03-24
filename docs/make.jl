@@ -8,7 +8,7 @@ makedocs(;
     ],
     repo="https://github.com/LAMPSPUC/LogisticRegression.jl/blob/{commit}{path}#L{line}",
     sitename="LogisticRegression.jl",
-    authors="Gabrile Mizuno <gabrielmizuno@gmail.com>",
+    authors="André Gutierez, Ana Carolina Freire, Gabrile Mizuno, Guilhemer Bodin",
     assets=String[],
 )
 
