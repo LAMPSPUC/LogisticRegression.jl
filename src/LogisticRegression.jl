@@ -1,5 +1,7 @@
 module LogisticRegression
 
-greet() = print("Hello World!")
+using LinearAlgebra, Optim, NLSolversBase
+
+include("estimation.jl")
 
 end # module
