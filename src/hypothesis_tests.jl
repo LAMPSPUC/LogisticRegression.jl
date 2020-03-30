@@ -1,18 +1,20 @@
-import Distributions
-
+import Distributions.ccdf
+using LogisticRegression
 
 #return a matrix of Zs of each paramenter of the model
-function standard(M::Matrix,var::Matrix):
+function standard(M::Matrix,var::Matrix)
     z= M/(varˆ(1/2))
     return z
 end
 
+println("it's working")
+
 #Given a Z from a parameter return if he is relevant (accept Ha) or not (accept Ho)
-function Walk(z::int, alfa::int)
+function Walk(z::Int, alfa::Int)
  
     if z<=0  
         z=-z
-    end if
+    end
 
     pvalue = ccdf(Normal, z)
 
@@ -20,12 +22,14 @@ function Walk(z::int, alfa::int)
         print("accept Ha")
     else
         print("accept Ho, B isn't relevant")
-    end if 
+    end 
 
 end 
 
+println("it's working")
 
-function Likelihood_ratio_test(full_model, reduced_model, Y, critical value)
+
+function Likelihood_ratio_test(full_model::Modelo{T}, reduced_model::Modelo{T},Y::Vectot{Int}, alfa::Number)
 
     F_parameters=estimate(full_model).beta_hat
     R_parameters=estimate(reduced_model).beta_hat
@@ -33,7 +37,7 @@ function Likelihood_ratio_test(full_model, reduced_model, Y, critical value)
 
     if G<=0
         G=-G
-    end if
+    end
 
     p_value = ccdf(Chisq, G)
  
@@ -41,8 +45,9 @@ function Likelihood_ratio_test(full_model, reduced_model, Y, critical value)
         print("accept Ha")
     else
         print("accept Ho, B isn't relevant")
-    end if
+    end
 
 end 
 
-print("it's working")
+
+println("it's working")
