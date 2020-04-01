@@ -6,5 +6,3 @@ Simple logistic regression package.
 [![Build Status](https://travis-ci.com/LAMPSPUC/LogisticRegression.jl.svg?branch=master)](https://travis-ci.com/LAMPSPUC/LogisticRegression.jl)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/LAMPSPUC/LogisticRegression.jl?svg=true)](https://ci.appveyor.com/project/LAMPSPUC/LogisticRegression-jl)
 [![Codecov](https://codecov.io/gh/LAMPSPUC/LogisticRegression.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/LAMPSPUC/LogisticRegression.jl)
-[![Coveralls](https://coveralls.io/repos/github/LAMPSPUC/LogisticRegression.jl/badge.svg?branch=master)](https://coveralls.io/github/LAMPSPUC/LogisticRegression.jl?branch=master)
-[![Build Status](https://api.cirrus-ci.com/github/LAMPSPUC/LogisticRegression.jl.svg)](https://cirrus-ci.com/github/LAMPSPUC/LogisticRegression.jl)
