@@ -27,15 +27,15 @@ function loglik(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{T}, num_obs::Int)
     return sum(y .* X * beta_hat - log.(ones(num_obs) + exp.(X * beta_hat)))
 end
 
-function eval_aic(llk::T, dof_log::Int, Model{T <: Real}) where T
-    return -2/length(Model.y) * llk + 2 * dof_log / length(Model.y) 
+function eval_aic(llk::T, dof_log::Int, num_obs::Int) where T
+    return -2/length(num_obs) * llk + 2 * dof_log / length(num_obs) 
 
-function eval_bic(llk::T, dof_log::Int, Model{T <: Real}) where T
-    return length(Model.y) * llk + dof_log * log(length(Model.y))
+function eval_bic(llk::T, dof_log::Int, num_obs::Int) where T
+    return length(num_obs)) * llk + dof_log * log(length(num_obs)))
 end
 
-function eval_r2(LL1::T, LL0::T) where T
-    return 1-LL1/LL0
+function eval_r2(ll1::T, ll0::T) where T
+    return 1-ll1/ll0
 end
 
 
@@ -52,8 +52,8 @@ function sigma(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{T}, num_obs::Int) 
 end
 
 function deviance_residuals(y::Vector{Int}, prevision::Vector{T}) where T
-    dev =  sign(y.-prevision).*(-2.*(y.*log(prevision)+(1.-y).*log(1.-prevision)))^(1/2)
-    return dev
+    return sign(y.-prevision).*(-2.*(y.*log(prevision)+(1.-y).*log(1.-prevision)))^(1/2)
+    
 
 function deviance_residuals_variance(dev::Vector{T}) where T
     for resi in dev
