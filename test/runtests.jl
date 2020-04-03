@@ -1,4 +1,4 @@
 using LogisticRegression
 using Test
 
-include("simple_model.jl")
+include("simple_models.jl")
