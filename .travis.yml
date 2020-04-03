@@ -1,0 +1,17 @@
+language: julia
+
+julia:
+  - 1.0
+
+os:
+  - linux
+
+after_success:
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  
+notifications:
+    email: false
+
+branches:
+  only:
+    - master
