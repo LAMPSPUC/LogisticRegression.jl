@@ -12,12 +12,11 @@ mutable struct Model{T <: Real}
     llk::T
     aic::T
     bic::T
-    r2::T
-    r2_adj::T
-    residuals::Vector{T}
-    residuals_dev::Float64
-    sigma::Matrix{T}
-    std_error::Vector{T}
-    z_value::Vector{T}
-    z_test_p_value::Vector{T}
+    # r2::T
+    dev_residuals::Vector{T}
+    dev_residuals_var::Float64
+    # sigma::Matrix{T}
+    # std_error::Vector{T}
+    # z_value::Vector{T}
+    # z_test_p_value::Vector{T}
 end

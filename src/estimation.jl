@@ -1,6 +1,6 @@
 # This function should find beta_hat
 function maxllk(y::Vector{Int}, X::Matrix{T}, num_par::Int, num_obs::Int) where T <: Real
-    func = TwiceDifferentiable(vars -> -optim_loglik(y, X, vars, num_obs), ones(num_par); autodiff=:forward)
+    func = Optim.TwiceDifferentiable(vars -> -optim_loglik(y, X, vars, num_obs), ones(num_par); autodiff=:forward)
     return optimize(func, ones(num_par))
 end
 
@@ -16,7 +16,7 @@ function eval_y_hat(pi_hat::Vector{T}, threshold::T) where T <: Real
     return map(x -> x > threshold ? 1 : 0, pi_hat)
 end
 
-function optim_loglik(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{T}, num_obs::Int) where T <: Real 
+function optim_loglik(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{S}, num_obs::Int) where {T <: Real, S}
     return sum(y .* X * beta_hat - log.(ones(num_obs) + exp.(X * beta_hat)))
 end
 
@@ -24,8 +24,9 @@ function eval_loglik(opt)
     return Optim.minimum(opt)
 end
 
-function eval_aic(llk::T, dof_log::Int, num_obs::Int) where T
+function eval_aic(llk::T, dof_log::Int) where T
     return 2 * dof_log - 2 * llk 
+end
 
 function eval_bic(llk::T, dof_log::Int, num_obs::Int) where T
     return dof_log * log(num_obs) - 2 * llk 
@@ -35,25 +36,25 @@ function eval_r2(ll1::T, ll0::T) where T
     return 1 - ll1/ll0
 end
 
-function sigma(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{T}, num_obs::Int, num_par::Int) where T
-    func = TwiceDifferentiable(vars -> -loglik(y, X, beta_hat, num_obs), ones(num_par); autodiff=:forward)
-    return inv(NLSolversBase.hessian!(func, beta_hat))
-end
+# function eval_sigma(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{T}, num_obs::Int, num_par::Int) where T
+#     func = TwiceDifferentiable(vars -> -optim_loglik(y, X, beta_hat, num_obs), ones(num_par); autodiff=:forward)
+#     return inv(NLSolversBase.hessian!(func, beta_hat))
+# end
 
-function deviance_residuals(y::Vector{Int}, prevision::Vector{T}) where T
-    return sign(y.-prevision).*(-2 .* (y.*log(prevision)+(1 .- y).*log(1 .- prevision)))^(1/2)
+function deviance_residuals(y::Vector{Int}, y_hat::Vector{T}) where T
+    return sign.(y.-y_hat) .* (-2 .* (y .* log.(y_hat) + (1 .- y) .* log.(1 .- y_hat))).^(1/2)
 end
 
 function deviance_residuals_variance(dev::Vector{T}) where T
     mu = mean(dev)
     variance = zero(T)
     for resi in dev
-        variance += (resi - mu)^(2)
+        variance += (resi - mu)^2
     end
     return variance/(length(dev)-1)
 end
 
-function std_error(sigma::Matrix{T}, num_par::Int) where T
+function eval_std_error(sigma::Matrix{T}, num_par::Int) where T
     std_err_vec = Vector{T}(undef, num_par)
     for i in 1:num_par
         std_err_vec[i] = sqrt(sigma[i, i])
@@ -61,8 +62,8 @@ function std_error(sigma::Matrix{T}, num_par::Int) where T
     return std_err_vec
 end
 
-function logreg(y::Vector{T}, X::Vector{T}) where T
-    return logreg(y, X[:, :])
+function logreg(y::Vector{Int}, X::Vector{T}; threshold::Float64 = 0.5) where T
+    return logreg(y, X[:, :]; threshold = threshold)
 end
 
 """
@@ -70,18 +71,25 @@ end
 
 Performs logistic regression.
 """
-function logreg(y::Vector{Int}, X::Matrix{T}, threshold::Float64 = 0.5) where T 
+function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T 
     num_obs, num_par = size(X)
     # Faz todas as funções necessárias
-    maxllk    = maxllk(y, X, num_par)
-    beta_hat  = eval_beta_hat(maxllk)
+    opt       = maxllk(y, X, num_par, num_obs)
+    beta_hat  = eval_beta_hat(opt)
     dof_log   = num_par
     dof_resid = num_obs - num_par
     dof_total = num_obs - 1
     pi_hat    = eval_pi_hat(y, X, beta_hat, num_obs)
     y_hat     = eval_y_hat(pi_hat, threshold)
-    llk       = loglik(y, X, beta_hat)
+    llk       = eval_loglik(opt)
     aic       = eval_aic(llk, dof_log)
-    bic       = eval_bic(llk, dof_log, y)
-    return Model(y, X, ...)
+    bic       = eval_bic(llk, dof_log, num_obs)
+    dev_residuals = deviance_residuals(y, y_hat)
+    dev_residuals_var = deviance_residuals_variance(dev_residuals)
+    # sigma = eval_sigma(y, X, beta_hat, num_obs, num_par)
+    # std_error = eval_std_error(sigma)
+
+    return Model(y, X, threshold, num_obs, beta_hat, pi_hat, y_hat, dof_log, dof_resid,
+                dof_total, llk, aic, bic, dev_residuals, dev_residuals_var)
+                # sigma, std_error)
 end
