@@ -43,7 +43,7 @@
     end
 
     @testset "model X_2" begin
-        modelo_2 = logreg(y, X_2)
+        model_2 = logreg(y, X_2)
 
         @test model_2.num_obs == 6
         @test model_2.dof_log == 2
