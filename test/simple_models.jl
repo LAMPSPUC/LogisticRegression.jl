@@ -1,4 +1,3 @@
-using Test
 @testset "simple models" begin
     y  = [0,1,0,1,1,0]
     x0 = ones(length(y))
@@ -27,7 +26,7 @@ using Test
     end
 
     @testset "model X_1" begin
-        model_1 = logreg(y, X1) 
+        model_1 = logreg(y, X_1) 
         @test model_1.num_obs == 6
         @test model_1.beta_hat ≈ [3.971,-1.260 ]  atol = 1e-3
         @test model_1.dof_log == 2
