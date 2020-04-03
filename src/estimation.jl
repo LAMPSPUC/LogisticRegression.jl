@@ -21,15 +21,15 @@ function optim_loglik(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{S}, num_obs
 end
 
 function eval_loglik(opt)
-    return Optim.minimum(opt)
+    return -Optim.minimum(opt)
 end
 
 function eval_aic(llk::T, dof_log::Int) where T
-    return 2 * dof_log - 2 * llk 
+    return 2 * (dof_log + 1) - 2 * llk 
 end
 
 function eval_bic(llk::T, dof_log::Int, num_obs::Int) where T
-    return dof_log * log(num_obs) - 2 * llk 
+    return (dof_log + 1) * log(num_obs) - 2 * llk 
 end
 
 function eval_r2(ll1::T, ll0::T) where T
@@ -41,8 +41,8 @@ end
 #     return inv(NLSolversBase.hessian!(func, beta_hat))
 # end
 
-function deviance_residuals(y::Vector{Int}, y_hat::Vector{T}) where T
-    return sign.(y.-y_hat) .* (-2 .* (y .* log.(y_hat) + (1 .- y) .* log.(1 .- y_hat))).^(1/2)
+function deviance_residuals(y::Vector{Int}, pi_hat::Vector{T}) where T
+    return sign.(y.-pi_hat) .* (-2 .* (y .* log.(pi_hat) + (1 .- y) .* log.(1 .- pi_hat))).^(1/2)
 end
 
 function deviance_residuals_variance(dev::Vector{T}) where T
@@ -76,7 +76,7 @@ function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T
     # Faz todas as funções necessárias
     opt       = maxllk(y, X, num_par, num_obs)
     beta_hat  = eval_beta_hat(opt)
-    dof_log   = num_par
+    dof_log   = num_par - 1
     dof_resid = num_obs - num_par
     dof_total = num_obs - 1
     pi_hat    = eval_pi_hat(y, X, beta_hat, num_obs)
@@ -84,7 +84,7 @@ function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T
     llk       = eval_loglik(opt)
     aic       = eval_aic(llk, dof_log)
     bic       = eval_bic(llk, dof_log, num_obs)
-    dev_residuals = deviance_residuals(y, y_hat)
+    dev_residuals = deviance_residuals(y, pi_hat)
     dev_residuals_var = deviance_residuals_variance(dev_residuals)
     # sigma = eval_sigma(y, X, beta_hat, num_obs, num_par)
     # std_error = eval_std_error(sigma)
