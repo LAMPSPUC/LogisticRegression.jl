@@ -7,7 +7,7 @@
     X_0 = x0
     X_1 = hcat(x0, x1)
     X_2 = hcat(X_1, x2)
-    X_3 = hcat(X_1, x3)
+    X_3 = hcat(X_2, x3)
 
     @testset "model X_0" begin
         model_0 = logreg(y, X_0)
@@ -25,17 +25,20 @@
         @test model_0.y_hat == ones(Int64, 6)
     end
 
-    # @testset "model X_1" begin
-    #     model_1 = logreg(y, X_1)
-
-    #     @test model_1.num_obs == 92
-    #     @test model_1.dof_log == 2
-    #     @test model_1.dof_resid == 90
-    #     @test model_1.dof_total == 91
-    #     @test model_1.llk == 0 # It will fail
-    #     @test model_1.aic == 0 # It will fail
-    #     # continues
-    # end
+    @testset "model X_1" begin
+        model_1 = logreg(y, X_1) 
+        @test model_1.num_obs == 6
+        @test model_1.beta_hat ≈ [3.971,-1.260]  atol = 1e-3
+        @test model_1.dof_log == 1
+        @test model_1.dof_resid == 4
+        @test model_1.dof_total == 5
+        @test model_1.pi_hat ≈ [0.6940996, 0.8614932, 0.2551409, 0.7448733, 0.3333144, 0.1110785] atol = 1e-3
+        @test model_1.y_hat ≈ [1, 1 , 0, 1, 0, 0] atol = 1e-3
+        @test model_1.llk ≈ -3.1391 atol = 1e-3 
+        @test model_1.aic ≈  10.2782 atol = 1e-3 
+        @test model_1.bic ≈ 9.86172 atol = 1e-3 
+        @test model_1.dev_residuals ≈  [-1.5391528,  0.5460551, -0.7675418,  0.7675169,  1.4823421, -0.4852760] atol = 1e-3
+    end
 
     @testset "model X_2" begin
         modelo_2 = logreg(y, X_2)
@@ -54,6 +57,15 @@
     end
 
     @testset "model X_3" begin
-
+        model_3 = logreg(y, X_3) 
+        @test model_3.num_obs == 6
+        @test model_3.dof_log == 3
+        @test model_3.dof_resid == 2
+        @test model_3.dof_total == 5
+        @test model_3.pi_hat ≈ [8.114495e-11, 1.000000e+00, 2.220446e-16, 1.000000e+00, 1.000000e+00, 4.127692e-11] atol = 1e-3
+        @test model_3.y_hat ≈ [0, 1, 0, 1, 1, 0] atol = 1e-3
+        @test model_3.llk ≈ -2.482672e-10 atol = 1e-3 
+        @test model_3.aic ≈ 8 atol = 1e-3 
+        @test model_3.bic ≈ 7.167038 atol = 1e-3 
     end
 end
