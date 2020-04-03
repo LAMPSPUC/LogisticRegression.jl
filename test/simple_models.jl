@@ -35,6 +35,18 @@ using Test
     end
 
     @testset "model X_3" begin
+    model_3 = logreg(y[1:6], [x0[1:6] x1[1:6] x2[1:6] x3[1:6]]) 
+    @test model_3.num_obs == 6
+    @test model_3.beta_hat ≈ [325.17, -110.06, -24.42, 203.64]  atol = 1e-3
+    @test model_3.dof_log == 4
+    @test model_3.dof_resid == 2
+    @test model_3.dof_total == 5
+    @test model_3.pi_hat ≈ [8.114495e-11, 1.000000e+00, 2.220446e-16, 1.000000e+00, 1.000000e+00, 4.127692e-11] atol = 1e-3
+    @test model_3.y_hat ≈ [0, 1 , 0, 1, 1, 0] atol = 1e-3
+    @test model_3.llk ≈ -2.482672e-10 atol = 1e-3 
+    @test model_3.aic ≈  8 atol = 1e-3 
+    @test model_3.bic ≈ 7.167038 atol = 1e-3 
+    @test model_3.dev_residuals ≈  [-1.273932e-05,  2.107342e-08, -2.107342e-08,  1.300524e-05,  9.085921e-06, -9.085921e-06] atol = 1e-3
 
     end
 end
