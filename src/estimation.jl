@@ -1,3 +1,5 @@
+import Distributions.ccdf
+
 # This function should find beta_hat
 function maxllk(y::Vector{Int}, X::Matrix{T}, num_par::Int, num_obs::Int) where T <: Real
     func = Optim.TwiceDifferentiable(vars -> -optim_loglik(y, X, vars, num_obs), ones(num_par); autodiff=:forward)
@@ -62,6 +64,18 @@ function eval_std_error(sigma::Matrix{T}, num_par::Int) where T
     return std_err_vec
 end
 
+function z_value(M::Vector, std::Vector)
+    z= M./std
+    return z
+end
+
+function calc_p_value(z::Float)
+    if z<=0  
+        z=-z
+    end
+    return ccdf(Normal(), z)           
+end  
+
 function logreg(y::Vector{Int}, X::Vector{T}; threshold::Float64 = 0.5) where T
     return logreg(y, X[:, :]; threshold = threshold)
 end
@@ -88,7 +102,9 @@ function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T
     dev_residuals_var = deviance_residuals_variance(dev_residuals)
     # sigma = eval_sigma(y, X, beta_hat, num_obs, num_par)
     # std_error = eval_std_error(sigma)
-
+    z_value = z_value(beta_hat, std_error)
+    z_test_p_value =  calc_p_value(z_value)
+    
     return Model(y, X, threshold, num_obs, beta_hat, pi_hat, y_hat, dof_log, dof_resid,
                 dof_total, llk, aic, bic, dev_residuals, dev_residuals_var)
                 # sigma, std_error)
