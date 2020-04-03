@@ -21,7 +21,7 @@ function optim_loglik(y::Vector{Int}, X::Matrix{T}, beta_hat::Vector{S}, num_obs
 end
 
 function eval_loglik(opt)
-    return Optim.minimum(opt)
+    return -Optim.minimum(opt)
 end
 
 function eval_aic(llk::T, dof_log::Int) where T
@@ -84,7 +84,7 @@ function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T
     llk       = eval_loglik(opt)
     aic       = eval_aic(llk, dof_log)
     bic       = eval_bic(llk, dof_log, num_obs)
-    dev_residuals = deviance_residuals(y, y_hat)
+    dev_residuals = deviance_residuals(y, pi_hat)
     dev_residuals_var = deviance_residuals_variance(dev_residuals)
     # sigma = eval_sigma(y, X, beta_hat, num_obs, num_par)
     # std_error = eval_std_error(sigma)

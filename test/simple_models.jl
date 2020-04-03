@@ -1,3 +1,4 @@
+using Test
 @testset "simple models" begin
     using LogisticRegression
     y  = [0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,1,1,0,1,1,1,0,0,0,1,1,1,1,0,0,1,0,1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,1,1,0,0,1,0,0,0,0,1,0,0,1,0,1,0,1,1,1,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,1,0,1,0]
@@ -15,15 +16,18 @@
     end
 
     @testset "model X_1" begin
-        model_1 = logreg(y, X_1)
-
-        @test model_1.num_obs == 92
+        model_1 = logreg(y[1:6], [x0[1:6] x1[1:6]]) 
+        @test model_1.num_obs == 6
+        @test model_1.beta_hat ≈ [3.971,-1.260 ]  atol = 1e-3
         @test model_1.dof_log == 2
-        @test model_1.dof_resid == 90
-        @test model_1.dof_total == 91
-        @test model_1.llk == 0 # It will fail
-        @test model_1.aic == 0 # It will fail
-        # continues
+        @test model_1.dof_resid == 4
+        @test model_1.dof_total == 5
+        @test model_1.pi_hat ≈ [0.6940996, 0.8614932, 0.2551409, 0.7448733, 0.3333144, 0.1110785] atol = 1e-3
+        @test model_1.y_hat ≈ [1, 1 , 0, 1, 0, 0] atol = 1e-3
+        @test model_1.llk ≈ -3.1391 atol = 1e-3 
+        @test model_1.aic ≈  10.2782 atol = 1e-3 
+        @test model_1.bic ≈ 9.86172 atol = 1e-3 
+        @test model_1.dev_residuals ≈  [-1.5391528,  0.5460551, -0.7675418,  0.7675169,  1.4823421, -0.4852760] atol = 1e-3
     end
 
     @testset "model X_2" begin
