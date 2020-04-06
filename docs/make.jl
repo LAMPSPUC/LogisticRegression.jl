@@ -1,4 +1,5 @@
 using Documenter, LogisticRegression
+using Plots
 
 makedocs(;
     modules=[LogisticRegression],

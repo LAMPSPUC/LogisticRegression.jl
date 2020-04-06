@@ -58,23 +58,4 @@
         @test model_2.y_hat == [1, 1, 0, 1, 1, 0]
         @test model_2.std_error ≈ [4.8242, 1.3811, 1.3498] atol = 1e-3
     end
-
-    # @testset "model X_3" begin
-    #     model_3 = logreg(y, X_3) 
-    #     @test model_3.num_obs == 6
-    #     @test model_3.dof_log == 3
-    #     @test model_3.dof_resid == 2
-    #     @test model_3.dof_total == 5
-    #     @test model_3.pi_hat ≈ [8.114495e-11, 1.000000e+00, 2.220446e-16, 1.000000e+00, 1.000000e+00, 4.127692e-11] atol = 1e-3
-    #     @test model_3.y_hat ≈ [0, 1, 0, 1, 1, 0] atol = 1e-3
-    #     @test model_3.llk ≈ -2.482672e-10 atol = 1e-3 
-    #     @test model_3.aic ≈ 8 atol = 1e-3 
-    #     @test model_3.bic ≈ 7.167038 atol = 1e-3 
-    # end
-
-    # @testset "Hypothesis_tests" begin
-    #     @test model_1 = logreg(y[1:6], [x0[1:6] x1[1:6]]) 
-    #     @test model_1.z_value = [1.184, -1.229]
-    #     @test model_1.z_test_p_value = [0.236, 0.219]
-    # end
 end

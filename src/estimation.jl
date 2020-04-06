@@ -66,22 +66,6 @@ function logreg(y::Vector{Int}, X::Vector{T}; threshold::Float64 = 0.5) where T
     return logreg(y, X[:, :]; threshold = threshold)
 end
 
-function z_value(M::Vector{T}, std::Vector{T}) where T
-    z= M./std
-    return z
-end
-
-function calc_p_value(z::Vector{T}, num_par::Int) where {T<:Real}
-    pvalue = zeros(num_par)
-    for (index, value) in enumerate(z)
-        if value<=0  
-            value=-value
-        end
-        pvalue[index] = value
-    end
-    return ccdf(Normal(), pvalue)           
-end 
-
 """
     logreg(y::Vector{Int}, X::Matrix{T}) where T 
 
