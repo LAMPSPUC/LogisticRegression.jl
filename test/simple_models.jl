@@ -23,6 +23,7 @@
         @test model_0.bic ≈ 10.10953 atol = 1e-4
         @test model_0.pi_hat ≈ [0.5, 0.5, 0.5, 0.5, 0.5, 0.5] atol = 1e-2
         @test model_0.y_hat == ones(Int64, 6)
+        @test model_0.std_error ≈ [0.8165] atol = 1e-3
     end
 
     @testset "model X_1" begin
@@ -38,34 +39,23 @@
         @test model_1.aic ≈  10.2782 atol = 1e-3 
         @test model_1.bic ≈ 9.86172 atol = 1e-3 
         @test model_1.dev_residuals ≈  [-1.5391528,  0.5460551, -0.7675418,  0.7675169,  1.4823421, -0.4852760] atol = 1e-3
+        @test model_1.std_error ≈ [3.353, 1.026] atol = 1e-3
     end
 
     @testset "model X_2" begin
-        modelo_2 = logreg(y, X_2)
+        model_2 = logreg(y, X_2)
 
-        @test modelo_2.num_obs == 6
-        @test modelo_2.dof_log == 2
-        @test modelo_2.dof_resid == 3
-        @test modelo_2.dof_total == 5
-        @test modelo_2.beta_hat ≈ [0.7187, -1.2929, 1.2082] atol = 1e-4
-        @test modelo_2.llk ≈ -2.639604 atol = 1e-5
-        @test modelo_2.dev_residuals ≈ [-1.6707271, 0.4704612, -0.4952902, 1.1096542, 0.8731406, -0.1659078] atol = 1e-7
-        @test modelo_2.aic ≈ 11.279 atol = 1e-3
-        @test modelo_2.bic ≈ 10.65449 atol = 1e-4
-        @test modelo_2.pi_hat ≈ [0.75233160, 0.89523692, 0.11543226, 0.54028085, 0.68304996, 0.01366843] atol = 1e-7
-        @test modelo_2.y_hat == [1, 1, 0, 1, 1, 0]
-    end
-
-    @testset "model X_3" begin
-        model_3 = logreg(y, X_3) 
-        @test model_3.num_obs == 6
-        @test model_3.dof_log == 3
-        @test model_3.dof_resid == 2
-        @test model_3.dof_total == 5
-        @test model_3.pi_hat ≈ [8.114495e-11, 1.000000e+00, 2.220446e-16, 1.000000e+00, 1.000000e+00, 4.127692e-11] atol = 1e-3
-        @test model_3.y_hat ≈ [0, 1, 0, 1, 1, 0] atol = 1e-3
-        @test model_3.llk ≈ -2.482672e-10 atol = 1e-3 
-        @test model_3.aic ≈ 8 atol = 1e-3 
-        @test model_3.bic ≈ 7.167038 atol = 1e-3 
+        @test model_2.num_obs == 6
+        @test model_2.dof_log == 2
+        @test model_2.dof_resid == 3
+        @test model_2.dof_total == 5
+        @test model_2.beta_hat ≈ [0.7187, -1.2929, 1.2082] atol = 1e-4
+        @test model_2.llk ≈ -2.639604 atol = 1e-5
+        @test model_2.dev_residuals ≈ [-1.6707271, 0.4704612, -0.4952902, 1.1096542, 0.8731406, -0.1659078] atol = 1e-7
+        @test model_2.aic ≈ 11.279 atol = 1e-3
+        @test model_2.bic ≈ 10.65449 atol = 1e-4
+        @test model_2.pi_hat ≈ [0.75233160, 0.89523692, 0.11543226, 0.54028085, 0.68304996, 0.01366843] atol = 1e-7
+        @test model_2.y_hat == [1, 1, 0, 1, 1, 0]
+        @test model_2.std_error ≈ [4.8242, 1.3811, 1.3498] atol = 1e-3
     end
 end

@@ -1,6 +1,6 @@
 module LogisticRegression
 
-using Statistics, Optim
+using Statistics, Optim, NLSolversBase, Distributions
 
 export logreg
 
