@@ -106,7 +106,7 @@ function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T
     sigma             = eval_sigma(y, X, beta_hat, num_obs, num_par)
     std_error         = eval_std_error(sigma, num_par)
     zvalue            = z_value(beta_hat, std_error)
-    z_test_p_value    = calc_p_value(zvalue)
+    z_test_p_value    = calc_p_value(zvalue, num_par)
 
     return Model(y, X, threshold, num_obs, beta_hat, pi_hat, y_hat, dof_log, dof_resid,
                 dof_total, llk, aic, bic, dev_residuals, dev_residuals_var, sigma, std_error,

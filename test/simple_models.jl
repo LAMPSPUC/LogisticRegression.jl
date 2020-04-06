@@ -40,7 +40,7 @@
         @test model_1.bic ≈ 9.86172 atol = 1e-3 
         @test model_1.dev_residuals ≈  [-1.5391528,  0.5460551, -0.7675418,  0.7675169,  1.4823421, -0.4852760] atol = 1e-3
         @test model_1.std_error ≈ [3.353, 1.026] atol = 1e-3
-    end
+    end 
 
     @testset "model X_2" begin
         model_2 = logreg(y, X_2)
@@ -57,5 +57,10 @@
         @test model_2.pi_hat ≈ [0.75233160, 0.89523692, 0.11543226, 0.54028085, 0.68304996, 0.01366843] atol = 1e-7
         @test model_2.y_hat == [1, 1, 0, 1, 1, 0]
         @test model_2.std_error ≈ [4.8242, 1.3811, 1.3498] atol = 1e-3
+    end
+    @testset "hypothesis test" begin
+        model_2  = logreg(y, X_2)
+        @test model_2.z_value ≈ [ 0.149, -0.936, 0.895] atol = 1e-3
+        @test model_2.z_test_p_value ≈ [0.882, 0.349, 0.371]  atol = 1e-3
     end
 end
