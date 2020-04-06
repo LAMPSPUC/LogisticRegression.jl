@@ -49,6 +49,23 @@ function eval_std_error(sigma::Matrix{T}, num_par::Int) where {T<:Real}
     return std_error
 end
 
+function z_value(M::Vector{T}, std::Vector{T}) where T
+    z= M./std
+    return z
+end
+
+function calc_p_value(z::Vector{T}, num_par::Int) where {T<:Real}
+    pvalue = zeros(num_par)
+    for (index, value) in enumerate(z)
+        if value<=0  
+            value=-value
+        end
+        pvalue[index] = value
+    end
+    return 2*ccdf.(Normal(), pvalue)           
+end
+
+
 function deviance_residuals(y::Vector{Int}, pi_hat::Vector{T}) where T
     return sign.(y.-pi_hat) .* (-2 .* (y .* log.(pi_hat) + (1 .- y) .* log.(1 .- pi_hat))).^(1/2)
 end
@@ -88,9 +105,10 @@ function logreg(y::Vector{Int}, X::Matrix{T}; threshold::T = 0.5) where T
     dev_residuals_var = deviance_residuals_variance(dev_residuals)
     sigma             = eval_sigma(y, X, beta_hat, num_obs, num_par)
     std_error         = eval_std_error(sigma, num_par)
-    # zvalue            = z_value(beta_hat, std_error)
-    # z_test_p_value    = calc_p_value(zvalue, num_par)
+    zvalue            = z_value(beta_hat, std_error)
+    z_test_p_value    = calc_p_value(zvalue)
 
     return Model(y, X, threshold, num_obs, beta_hat, pi_hat, y_hat, dof_log, dof_resid,
-                dof_total, llk, aic, bic, dev_residuals, dev_residuals_var, sigma, std_error)
+                dof_total, llk, aic, bic, dev_residuals, dev_residuals_var, sigma, std_error,
+                zvalue, z_test_p_value)
 end
