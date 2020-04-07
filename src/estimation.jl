@@ -49,23 +49,6 @@ function eval_std_error(sigma::Matrix{T}, num_par::Int) where {T<:Real}
     return std_error
 end
 
-function z_value(M::Vector{T}, std::Vector{T}) where T
-    z= M./std
-    return z
-end
-
-function calc_p_value(z::Vector{T}, num_par::Int) where {T<:Real}
-    pvalue = zeros(num_par)
-    for (index, value) in enumerate(z)
-        if value<=0  
-            value=-value
-        end
-        pvalue[index] = value
-    end
-    return 2*ccdf.(Normal(), pvalue)           
-end
-
-
 function deviance_residuals(y::Vector{Int}, pi_hat::Vector{T}) where T
     return sign.(y.-pi_hat) .* (-2 .* (y .* log.(pi_hat) + (1 .- y) .* log.(1 .- pi_hat))).^(1/2)
 end
